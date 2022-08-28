@@ -60,11 +60,11 @@ public class EffectHandler {
 
 	public void playEffect(EffectPlayer effect, Player player, Location location, Object... args) {
 		EffectContext context = new EffectContext(player, location, effect);
-		var inner = cooldownQueues.computeIfAbsent(player.getUniqueId(), (uuid) -> new HashMap<>());
 		var locks = cooldownLocks.computeIfAbsent(player.getUniqueId(), uuid -> new HashSet<>());
 		if (locks.contains(effect)) {
-			inner.get(effect).add(() -> {
-				locks.add(effect);
+			var inner = cooldownQueues.computeIfAbsent(player.getUniqueId(), (uuid) -> new HashMap<>());
+			inner.computeIfAbsent(effect, player1 -> new LinkedList<>()).add(() -> {
+				cooldownLocks.computeIfAbsent(player.getUniqueId(), uuid -> new HashSet<>()).add(effect);
 				effect.play(context, args);
 			});
 		} else {
