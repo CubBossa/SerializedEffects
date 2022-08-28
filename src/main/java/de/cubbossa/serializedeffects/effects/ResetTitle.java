@@ -1,7 +1,6 @@
 package de.cubbossa.serializedeffects.effects;
 
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import de.cubbossa.serializedeffects.EffectContext;
 
 import java.util.Map;
 
@@ -14,8 +13,8 @@ public class ResetTitle extends EffectPlayer {
 	}
 
 	@Override
-	public void play(Player player, Location location, Object... args) {
-		player.resetTitle();
-		super.play(player, location, args);;
+	public void play(EffectContext context, Object... args) {
+		context.player().resetTitle();
+		super.play(context, args);
 	}
 }

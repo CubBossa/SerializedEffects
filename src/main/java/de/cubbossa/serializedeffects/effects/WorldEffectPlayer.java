@@ -1,5 +1,6 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,9 +29,9 @@ public class WorldEffectPlayer extends EffectPlayer {
 		return this;
 	}
 
-	public void play(Player player, Location location, Object... args) {
-		player.playEffect(location, effect, data);
-		super.play(player, location, args);
+	public void play(EffectContext context, Object... args) {
+		context.player().playEffect(context.location(), effect, data);
+		super.play(context, args);
 	}
 
 	public Map<String, Object> serialize() {

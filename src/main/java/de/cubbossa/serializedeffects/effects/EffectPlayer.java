@@ -1,9 +1,8 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import de.cubbossa.serializedeffects.EffectHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ public class EffectPlayer {
     private final HashMap<EffectPlayer, Integer> effects;
 
     public EffectPlayer() {
-        this.effects = new HashMap<>();
+        this.effects = new LinkedHashMap<>();
     }
 
     @Override
@@ -50,12 +49,12 @@ public class EffectPlayer {
         return this;
     }
 
-    public void play(Player player, Location location, Object... args) {
+    public void play(EffectContext context, Object... args) {
         for (Map.Entry<EffectPlayer, Integer> entry : effects.entrySet()) {
             if (entry.getValue() > 0) {
-                Bukkit.getScheduler().runTaskLater(EffectHandler.getInstance().getPlugin(), () -> entry.getKey().play(player, location, args), entry.getValue());
+                Bukkit.getScheduler().runTaskLater(EffectHandler.getInstance().getPlugin(), () -> entry.getKey().play(context, args), entry.getValue());
             } else {
-                entry.getKey().play(player, location, args);
+                entry.getKey().play(context, context.location(), args);
             }
         }
     }

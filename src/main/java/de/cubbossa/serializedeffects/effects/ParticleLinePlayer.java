@@ -1,12 +1,11 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.Map;
@@ -36,9 +35,10 @@ public class ParticleLinePlayer extends ParticlePlayer {
 		return this;
 	}
 
-	@Override public void play(Player player, Location location, Object... args) {
+	@Override
+	public void play(EffectContext context, Object... args) {
 		for (float i = 0; i < length; i += distance) {
-			super.play(player, location.clone().add(location.getDirection().normalize().multiply(i)), args);
+			super.play(new EffectContext(context.player(), context.location().clone().add(context.location().getDirection().normalize().multiply(i)), context.root()), args);
 		}
 	}
 

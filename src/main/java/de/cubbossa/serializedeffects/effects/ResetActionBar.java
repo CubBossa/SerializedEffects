@@ -1,5 +1,6 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import de.cubbossa.serializedeffects.EffectHandler;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -16,8 +17,8 @@ public class ResetActionBar extends EffectPlayer {
 	}
 
 	@Override
-	public void play(Player player, Location location, Object... args) {
-		EffectHandler.getInstance().getAudiences().player(player).sendActionBar(Component.empty());
-		super.play(player, location, args);;
+	public void play(EffectContext context, Object... args) {
+		EffectHandler.getInstance().getAudiences().player(context.player()).sendActionBar(Component.empty());
+		super.play(context, args);
 	}
 }

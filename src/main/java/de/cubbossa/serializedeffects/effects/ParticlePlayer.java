@@ -1,12 +1,12 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Particle;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.LinkedHashMap;
@@ -30,11 +30,12 @@ public class ParticlePlayer extends EffectPlayer {
 		this.offset = offset;
 	}
 
-	@Override public void play(Player player, Location location, Object... args) {
-		location = location.clone().subtract(0, .3f, 0);
+	@Override
+	public void play(EffectContext context, Object... args) {
+		Location location = context.location().clone().subtract(0, .3f, 0);
 		Vector motion = this.motion.clone().multiply(location.getDirection());
-		player.spawnParticle(particle, location.clone().add((Math.random() * 2 - 1) * offset.getX(), (Math.random() * 2 - 1) * offset.getY(), (Math.random() * 2 - 1) * offset.getZ()), amount, motion.getX(), motion.getY(), motion.getZ(), data);
-		super.play(player, location, args);;
+		context.player().spawnParticle(particle, location.clone().add((Math.random() * 2 - 1) * offset.getX(), (Math.random() * 2 - 1) * offset.getY(), (Math.random() * 2 - 1) * offset.getZ()), amount, motion.getX(), motion.getY(), motion.getZ(), data);
+		super.play(context, args);
 	}
 
 	public ParticlePlayer withParticle(Particle particle) {

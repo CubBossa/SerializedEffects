@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,26 +15,24 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActionBarPlayer extends EffectPlayer {
+public class Cooldown extends EffectPlayer {
 
-	private String text;
+	private int ticks;
 
-	public ActionBarPlayer withText(String text) {
-		this.text = text;
+	public Cooldown withDuration(int ticks) {
+		this.ticks = ticks;
 		return this;
 	}
 
 	@Override
 	public void play(EffectContext context, Object... args) {
-		TagResolver resolver = args.length > 0 && args[0] instanceof TagResolver r ? r : TagResolver.empty();
-		EffectHandler.getInstance().getAudiences().player(context.player()).sendActionBar(
-				EffectHandler.getInstance().getTranslator().apply(new EffectHandler.TextContext(text, context.player(), resolver)));
+		Bukkit.getScheduler().runTaskLater(EffectHandler.getInstance().getPlugin(), () -> EffectHandler.getInstance().freeEffect(context.player(), context.root()), ticks);
 		super.play(context, args);
 	}
 
 	@Override
 	public EffectPlayer clone() {
-		var effect = new ActionBarPlayer().withText(text);
+		var effect = new Cooldown().withDuration(ticks);
 		getEffectPlayers(false).forEach((effectPlayer, integer) -> effect.addEffect(integer, effectPlayer.clone()));
 		return effect;
 	}
@@ -44,7 +40,7 @@ public class ActionBarPlayer extends EffectPlayer {
 	@Override
 	public Map<String, Object> serialize() {
 		Map<String, Object> ret = new LinkedHashMap<>();
-		ret.put("text", text);
+		ret.put("duration", ticks);
 		var subEffects = super.serialize();
 		if (!subEffects.isEmpty()) {
 			ret.put("effects", subEffects);
@@ -52,16 +48,16 @@ public class ActionBarPlayer extends EffectPlayer {
 		return ret;
 	}
 
-	public static ActionBarPlayer deserialize(Map<String, Object> values) {
-		ActionBarPlayer ret = new ActionBarPlayer((String) values.getOrDefault("text", "Title"));
+	public static Cooldown deserialize(Map<String, Object> values) {
+		Cooldown ret = new Cooldown((int) values.getOrDefault("ticks", 1));
 		EffectPlayer.deserialize(values).getEffectPlayers(false).forEach((key, value) -> ret.addEffect(value, key));
 		return ret;
 	}
 
 	@Override
 	public String toString() {
-		return "ActionBarPlayer{" +
-				"text=" + text +
+		return "Cooldown{" +
+				"ticks=" + ticks +
 				'}';
 	}
 }

@@ -17,11 +17,11 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ActionBarPlayer extends EffectPlayer {
+public class MessagePlayer extends EffectPlayer {
 
 	private String text;
 
-	public ActionBarPlayer withText(String text) {
+	public MessagePlayer withText(String text) {
 		this.text = text;
 		return this;
 	}
@@ -29,14 +29,14 @@ public class ActionBarPlayer extends EffectPlayer {
 	@Override
 	public void play(EffectContext context, Object... args) {
 		TagResolver resolver = args.length > 0 && args[0] instanceof TagResolver r ? r : TagResolver.empty();
-		EffectHandler.getInstance().getAudiences().player(context.player()).sendActionBar(
+		EffectHandler.getInstance().getAudiences().player(context.player()).sendMessage(
 				EffectHandler.getInstance().getTranslator().apply(new EffectHandler.TextContext(text, context.player(), resolver)));
 		super.play(context, args);
 	}
 
 	@Override
 	public EffectPlayer clone() {
-		var effect = new ActionBarPlayer().withText(text);
+		var effect = new MessagePlayer().withText(text);
 		getEffectPlayers(false).forEach((effectPlayer, integer) -> effect.addEffect(integer, effectPlayer.clone()));
 		return effect;
 	}
@@ -52,15 +52,15 @@ public class ActionBarPlayer extends EffectPlayer {
 		return ret;
 	}
 
-	public static ActionBarPlayer deserialize(Map<String, Object> values) {
-		ActionBarPlayer ret = new ActionBarPlayer((String) values.getOrDefault("text", "Title"));
+	public static MessagePlayer deserialize(Map<String, Object> values) {
+		MessagePlayer ret = new MessagePlayer((String) values.getOrDefault("text", "Text"));
 		EffectPlayer.deserialize(values).getEffectPlayers(false).forEach((key, value) -> ret.addEffect(value, key));
 		return ret;
 	}
 
 	@Override
 	public String toString() {
-		return "ActionBarPlayer{" +
+		return "MessagePlayer{" +
 				"text=" + text +
 				'}';
 	}

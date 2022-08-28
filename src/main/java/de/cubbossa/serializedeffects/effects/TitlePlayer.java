@@ -1,5 +1,6 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import de.cubbossa.serializedeffects.EffectHandler;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,13 +45,13 @@ public class TitlePlayer extends EffectPlayer {
 	}
 
 	@Override
-	public void play(Player player, Location location, Object... args) {
+	public void play(EffectContext context, Object... args) {
 		TagResolver resolver = args.length > 0 && args[0] instanceof TagResolver r ? r : TagResolver.empty();
-		EffectHandler.getInstance().getAudiences().player(player).showTitle(Title.title(
-				EffectHandler.getInstance().getMiniMessage().deserialize(title, resolver),
-				EffectHandler.getInstance().getMiniMessage().deserialize(subTitle, resolver),
+		EffectHandler.getInstance().getAudiences().player(context.player()).showTitle(Title.title(
+				EffectHandler.getInstance().getTranslator().apply(new EffectHandler.TextContext(title, context.player(), resolver)),
+				EffectHandler.getInstance().getTranslator().apply(new EffectHandler.TextContext(subTitle, context.player(), resolver)),
 				Title.Times.times(Duration.ofMillis(fadeInTicks * 50L), Duration.ofMillis(stayTicks * 50L), Duration.ofMillis(fadeOutTicks * 50L))));
-		super.play(player, location, args);
+		super.play(context, args);
 	}
 
 	@Override

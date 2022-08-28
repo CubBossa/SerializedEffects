@@ -1,5 +1,6 @@
 package de.cubbossa.serializedeffects.effects;
 
+import de.cubbossa.serializedeffects.EffectContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,9 +39,9 @@ public class SoundPlayer extends EffectPlayer {
         return this;
     }
 
-    public void play(Player player, Location location, Object... args) {
-        player.playSound(location, sound, volume, pitch);
-        super.play(player, location, args);
+    public void play(EffectContext context, Object... args) {
+        context.player().playSound(context.location(), sound, volume, pitch);
+        super.play(context, args);
     }
 
     @Override
