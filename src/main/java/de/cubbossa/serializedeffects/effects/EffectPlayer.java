@@ -54,7 +54,7 @@ public class EffectPlayer {
             if (entry.getValue() > 0) {
                 Bukkit.getScheduler().runTaskLater(EffectHandler.getInstance().getPlugin(), () -> entry.getKey().play(context, args), entry.getValue());
             } else {
-                entry.getKey().play(context, context.location(), args);
+                entry.getKey().play(context, args);
             }
         }
     }
