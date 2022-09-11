@@ -55,10 +55,16 @@ public class EffectHandler {
 	}
 
 	public void playEffect(File file, String name, Player player, Location location, Object... args) {
-		playEffect(getEffect(file, name), player, location, args);
+		EffectPlayer effect = getEffect(file, name);
+		if(effect != null) {
+			playEffect(effect, player, location, args);
+		}
 	}
 
 	public void playEffect(EffectPlayer effect, Player player, Location location, Object... args) {
+		if(effect == null) {
+			return;
+		}
 		EffectContext context = new EffectContext(player, location, effect);
 		var locks = cooldownLocks.computeIfAbsent(player.getUniqueId(), uuid -> new HashSet<>());
 		if (locks.contains(effect)) {
