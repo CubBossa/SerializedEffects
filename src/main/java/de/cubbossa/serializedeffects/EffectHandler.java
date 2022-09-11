@@ -35,7 +35,7 @@ public class EffectHandler {
 	private final MiniMessage miniMessage;
 	private final Function<TextContext, Component> translator;
 
-	private final Map<File, Map<String, Object>> effects;
+	private final Map<String, Map<String, Object>> effects;
 	private final Map<UUID, Collection<EffectPlayer>> cooldownLocks;
 	private final Map<UUID, Map<EffectPlayer, Queue<Runnable>>> cooldownQueues;
 
@@ -51,7 +51,7 @@ public class EffectHandler {
 	}
 
 	public void clearCache(File file) {
-		effects.remove(file);
+		effects.remove(file.getPath());
 	}
 
 	public void playEffect(File file, String name, Player player, Location location, Object... args) {
@@ -74,9 +74,13 @@ public class EffectHandler {
 				effect.play(context, args);
 			});
 		} else {
-			locks.add(effect);
 			effect.play(context, args);
 		}
+	}
+
+	public void lockEffect(Player player, EffectPlayer effect) {
+		var locks = cooldownLocks.computeIfAbsent(player.getUniqueId(), uuid -> new HashSet<>());
+		locks.add(effect);
 	}
 
 	public void freeEffect(Player player, EffectPlayer effect) {
@@ -89,9 +93,9 @@ public class EffectHandler {
 	}
 
 	public EffectPlayer getEffect(File file, String name) {
-		return effects.computeIfAbsent(file, f -> {
+		return effects.computeIfAbsent(file.getPath(), f -> {
 			try {
-				return NBOFile.loadFile(f, NBOFile.DEFAULT_SERIALIZER
+				return NBOFile.loadFile(new File(f), NBOFile.DEFAULT_SERIALIZER
 						.registerMapSerializer(Cooldown.class, Cooldown::deserialize, Cooldown::serialize)
 						.registerMapSerializer(ActionBarPlayer.class, ActionBarPlayer::deserialize, ActionBarPlayer::serialize)
 						.registerMapSerializer(EffectPlayer.class, EffectPlayer::deserialize, EffectPlayer::serialize)

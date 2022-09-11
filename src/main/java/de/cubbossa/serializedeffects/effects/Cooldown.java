@@ -26,6 +26,7 @@ public class Cooldown extends EffectPlayer {
 
 	@Override
 	public void play(EffectContext context, Object... args) {
+		EffectHandler.getInstance().lockEffect(context.player(), context.root());
 		Bukkit.getScheduler().runTaskLater(EffectHandler.getInstance().getPlugin(), () -> EffectHandler.getInstance().freeEffect(context.player(), context.root()), ticks);
 		super.play(context, args);
 	}
