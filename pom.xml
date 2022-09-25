@@ -51,6 +51,12 @@
 
         <dependency>
             <groupId>de.cubbossa</groupId>
+            <artifactId>NBO-Core</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.cubbossa</groupId>
             <artifactId>NBO-Bukkit</artifactId>
             <version>1.0</version>
         </dependency>
